@@ -3,10 +3,11 @@ import random
 import os
 file_name = "relation_3_1"
 file_name_2 = "words_1"
-end_num = 1
+end_num = 15
 
 f = open("relation_2")
 dic = {}
+dic2 = {}
 line = f.readline()
 while line:
   word = line.strip("\n").split(" ")[1]
@@ -14,6 +15,11 @@ while line:
     dic[word] = [line]
   else:
     dic[word].append(line)
+  word = line.strip("\n").split(" ")[0]
+  if word in dic2:
+    dic2[word] += 1
+  else:
+    dic2[word] = 1
   line = f.readline()
 
 f_w = open(file_name, "w")
@@ -44,7 +50,7 @@ line = f.readline()
 w_list = []
 while line:
   word = line.split(" ")[0]
-  if word not in kai_list and word not in w_list:
+  if word not in kai_list and word not in w_list and dic2[word] > 2:
     w_list.append(word)
   line = f.readline()
 

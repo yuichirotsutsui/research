@@ -56,11 +56,11 @@ def learn_rbm(rbm, learning_rate = 0.0001, k = 1, training_epochs = 1000, batch_
         cost = rbm.get_reconstruction_cross_entropy()
         print >> sys.stderr, 'Training epoch %d, cost is ' % epoch, cost
 
-def get_ans_gbrbm(data, gbrbm, reconstruct_num = 100):
+def get_ans_gbrbm(data, gbrbm, num1 = 100, num2 = 0, var1 = 0, var2 = 0, sample1 = True, sample2 = True):
     zero_data = numpy.array([[0 for i in range(200)] for j in range(len(data))])
     data_left = numpy.hsplit(data, [200])[0]
-    data2 = gbrbm.make_memory(numpy.c_[data_left, zero_data], num = reconstruct_num, data = data_left, var = 0, simple_sample = True)
-    data2 = gbrbm.make_memory(data2, num = reconstruct_num, var = 0, simple_sample = True)
+    data2 = gbrbm.make_memory(numpy.c_[data_left, zero_data], num = num1, data = data_left, var = var1, simple_sample = sample1)
+    data2 = gbrbm.make_memory(data2, num = num2, var = var2, simple_sample = sample2)
     return numpy.hsplit(data2, [200])[1]
 
 def sub_calc(ans, keys, dic):
@@ -105,10 +105,10 @@ def calc(file_name, ans, dic, proc):
         count += 1.0
         print 100 * ans_num / count
 
-load_gbrbm = False
+load_gbrbm = True
 pp = 0.0001
-hidden_layer = 100
-epoch = 10000
+hidden_layer = 400
+epoch = 100000
 learning_file = "relation_3_1"
 dic_path = "./renso_normalized"
 reconstruct_num = 100
@@ -129,9 +129,9 @@ if load_gbrbm:
 else:
     gbrbm = GBRBM.GBRBM(input = copy.copy(learning_data), n_visible = learning_data_len, n_hidden = hidden_layer, cupy_rng = rng)
 
-learn_rbm(gbrbm, training_epochs = epoch, learning_rate = pp, batch_size = batch_size)
+#learn_rbm(gbrbm, training_epochs = epoch, learning_rate = pp, batch_size = batch_size)
 f_gbrbm = open("gbrbm_dump", "w")
 pickle.dump(gbrbm, f_gbrbm)
 f_gbrbm.close()
-ans = get_ans_gbrbm(learning_data, gbrbm, reconstruct_num = reconstruct_num)
+ans = get_ans_gbrbm(learning_data, gbrbm)
 calc(learning_file, chainer.cuda.to_cpu(ans), dic, proc)

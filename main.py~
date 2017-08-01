@@ -105,10 +105,10 @@ def calc(file_name, ans, dic, proc):
         count += 1.0
         print 100 * ans_num / count
 
-load_gbrbm = False
-pp = 0.01
-hidden_layer = 100
-epoch = 10000
+load_gbrbm = True
+pp = 0.0001
+hidden_layer = 400
+epoch = 100000
 learning_file = "relation_3_1"
 dic_path = "./renso_normalized"
 reconstruct_num = 100
@@ -129,7 +129,7 @@ if load_gbrbm:
 else:
     gbrbm = GBRBM.GBRBM(input = copy.copy(learning_data), n_visible = learning_data_len, n_hidden = hidden_layer, cupy_rng = rng)
 
-learn_rbm(gbrbm, training_epochs = epoch, learning_rate = pp, batch_size = batch_size)
+#learn_rbm(gbrbm, training_epochs = epoch, learning_rate = pp, batch_size = batch_size)
 f_gbrbm = open("gbrbm_dump", "w")
 pickle.dump(gbrbm, f_gbrbm)
 f_gbrbm.close()
